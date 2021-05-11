@@ -1,7 +1,14 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import Card from './Card';
 
+const ListCardsWrapper = styled.div`
+    width: 80%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+`;
 interface pokemonProps {
     name: string,
     url: string,
@@ -10,7 +17,7 @@ interface pokemonProps {
 export default function ListCards() {
     const [pokemons, setPokemons] = useState([]);
 
-    const URL = "https://pokeapi.co/api/v2/pokemon/?offset=64&limit=10";
+    const URL = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=150";
 
     useEffect(() => {
         axios.get(URL).then(
@@ -21,10 +28,10 @@ export default function ListCards() {
     }, []);
 
     return (
-        <>
+        <ListCardsWrapper>
             {pokemons.map(
                 (pokemon: pokemonProps) => <Card name={pokemon.name} url={pokemon.url} key={pokemon.name}/>
             )}
-        </>
+        </ListCardsWrapper>
     );
 }

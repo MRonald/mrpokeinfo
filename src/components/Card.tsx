@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const CardWrapper = styled.div`
-    width: 300px;
+    width: 290px;
+    margin: 10px;
     border: 2px solid var(--orange-dark);
     border-radius: 10px;
     background-image: linear-gradient(to right, var(--orange-light), #ffd48e );
@@ -75,6 +76,7 @@ const StatisticWrapper = styled.div`
         background-color: #cecece;
         border: 1px solid gray;
         border-radius: 10px;
+        overflow: hidden;
 
         div {
             height: 100%;
@@ -88,7 +90,6 @@ const StatisticWrapper = styled.div`
 interface StatisticProps {
     name: string,
     value: number,
-    maxValue: number,
 }
 
 interface CardProps {
@@ -122,7 +123,8 @@ interface typeProps {
 
 // Statistic is a internal component
 
-function Statistic({ name, value, maxValue }: StatisticProps) {
+function Statistic({ name, value }: StatisticProps) {
+    const maxValue = 250;
     return (
         <StatisticWrapper>
             <div>
@@ -201,12 +203,12 @@ export default function Card({ name, url }: CardProps) {
                         </div>
                     </section>
                     <section className="statistics">
-                        <Statistic name="HP" value={pokemon.stats.hp} maxValue={300} />
-                        <Statistic name="ATK" value={pokemon.stats.attack} maxValue={300} />
-                        <Statistic name="DEF" value={pokemon.stats.defense} maxValue={300} />
-                        <Statistic name="S.ATK" value={pokemon.stats['special-attack']} maxValue={300} />
-                        <Statistic name="S.DEF" value={pokemon.stats['special-defense']} maxValue={300} />
-                        <Statistic name="SPD" value={pokemon.stats.speed} maxValue={300} />
+                        <Statistic name="HP" value={pokemon.stats.hp} />
+                        <Statistic name="ATK" value={pokemon.stats.attack} />
+                        <Statistic name="DEF" value={pokemon.stats.defense} />
+                        <Statistic name="S.ATK" value={pokemon.stats['special-attack']} />
+                        <Statistic name="S.DEF" value={pokemon.stats['special-defense']} />
+                        <Statistic name="SPD" value={pokemon.stats.speed} />
                     </section>
                 </>
             )}
