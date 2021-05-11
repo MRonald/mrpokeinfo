@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
-import Card from './components/Card';
 import Header from './components/Header';
+import ListCards from './components/ListCards';
 
 const GlobalStyle = createGlobalStyle`
     :root {
@@ -21,7 +21,7 @@ export default function App() {
         <div>
             <GlobalStyle />
             <Header />
-            <Card />
+            <ListCards />
         </div>
     );
 }

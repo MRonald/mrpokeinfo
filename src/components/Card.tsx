@@ -1,22 +1,6 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-const pokemon = {
-    "base_experience": 64,
-    "height": 7,
-    "weight": 69,
-    "id": 1,
-    "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-    "types": ["grass", "poison"],
-    "stats": {
-        "hp": 45,
-        "attack": 49,
-        "defense": 49,
-        "special-attack": 65,
-        "special-defense": 65,
-        "speed": 66
-    },
-    "name": "bulbasaur"
-}
 
 const CardWrapper = styled.div`
     width: 300px;
@@ -100,11 +84,43 @@ const StatisticWrapper = styled.div`
     }
 `;
 
+// Interfaces
 interface StatisticProps {
     name: string,
     value: number,
     maxValue: number,
 }
+
+interface CardProps {
+    name: string,
+    url: string,
+}
+
+interface pokemonProps {
+    "base_experience": number,
+    "height": number,
+    "weight": number,
+    "id": number,
+    "image": string,
+    "types": Array<string>,
+    "stats": {
+        "hp": number,
+        "attack": number,
+        "defense": number,
+        "special-attack": number,
+        "special-defense": number,
+        "speed": number
+    },
+    "name": string
+}
+
+interface typeProps {
+    "type": {
+        "name": string,
+    }
+}
+
+// Statistic is a internal component
 
 function Statistic({ name, value, maxValue }: StatisticProps) {
     return (
@@ -120,44 +136,81 @@ function Statistic({ name, value, maxValue }: StatisticProps) {
     );
 }
 
-export default function Card() {
+export default function Card({ name, url }: CardProps) {
+    const [pokemon, setPokemon] = useState({} as pokemonProps);
+    const [busca, setBusca] = useState(false);
+
+    useEffect(() => {
+        axios.get(url).then(
+            response => {
+                const typesPokemon = response.data.types.map((type: typeProps) => type.type.name);
+                const result = {
+                    "base_experience": response.data.base_experience,
+                    "height": response.data.height,
+                    "weight": response.data.weight,
+                    "id": response.data.id,
+                    "image": response.data.sprites.other["official-artwork"].front_default,
+                    "types": typesPokemon,
+                    "stats": {
+                        "hp": response.data.stats[0].base_stat,
+                        "attack": response.data.stats[1].base_stat,
+                        "defense": response.data.stats[2].base_stat,
+                        "special-attack": response.data.stats[3].base_stat,
+                        "special-defense": response.data.stats[4].base_stat,
+                        "speed": response.data.stats[5].base_stat,
+                    },
+                    "name": response.data.name,
+                }
+                setPokemon(result);
+                setBusca(true);
+            }
+        );
+    }, [url]);
+
     return (
         <CardWrapper>
-            <header>
-                <span>#{pokemon.id}</span>
-                <span>{pokemon.name}</span>
-            </header>
-            <section className="imgWrapper">
-                <img src={pokemon.image} alt={`Pokemon ${pokemon.name}`} />
-            </section>
-            <section className="info">
-                <div>
-                    <span>
-                        Tipo(s): {
-                            pokemon.types.map((type, i) => {
-                                if (i !== pokemon.types.length - 1) {
-                                    return `${type}, `;
-                                } else {
-                                    return type;
+            {!busca ? (
+                <div>Carregando {name}...</div>
+            ) : (
+                <>
+                    <header>
+                        <span>#{pokemon.id}</span>
+                        <span>{pokemon.name}</span>
+                    </header>
+                    <section className="imgWrapper">
+                        <img src={pokemon.image} alt={`Pokemon ${pokemon.name}`} />
+                    </section>
+                    <section className="info">
+                        <div>
+                            <span>
+                                Tipo(s): {
+                                    pokemon.types.map((type, i) => {
+                                        if (i !== pokemon.types.length - 1) {
+                                            return `${type}, `;
+                                        } else {
+                                            return type;
+                                        }
+                                    })
                                 }
-                            })
-                        }
-                    </span>
-                    <span>XP: {pokemon.base_experience}</span>
-                </div>
-                <div>
-                    <span>Altura: {pokemon.height * 10} cm</span>
-                    <span>Peso: {pokemon.weight / 10} kg</span>
-                </div>
-            </section>
-            <section className="statistics">
-                <Statistic name="HP" value={pokemon.stats.hp} maxValue={300} />
-                <Statistic name="ATK" value={pokemon.stats.attack} maxValue={300} />
-                <Statistic name="DEF" value={pokemon.stats.defense} maxValue={300} />
-                <Statistic name="S.ATK" value={pokemon.stats['special-attack']} maxValue={300} />
-                <Statistic name="S.DEF" value={pokemon.stats['special-defense']} maxValue={300} />
-                <Statistic name="SPD" value={pokemon.stats.speed} maxValue={300} />
-            </section>
+                            </span>
+                            <span>XP: {pokemon.base_experience}</span>
+                        </div>
+                        <div>
+                            <span>Altura: {pokemon.height * 10} cm</span>
+                            <span>Peso: {pokemon.weight / 10} kg</span>
+                        </div>
+                    </section>
+                    <section className="statistics">
+                        <Statistic name="HP" value={pokemon.stats.hp} maxValue={300} />
+                        <Statistic name="ATK" value={pokemon.stats.attack} maxValue={300} />
+                        <Statistic name="DEF" value={pokemon.stats.defense} maxValue={300} />
+                        <Statistic name="S.ATK" value={pokemon.stats['special-attack']} maxValue={300} />
+                        <Statistic name="S.DEF" value={pokemon.stats['special-defense']} maxValue={300} />
+                        <Statistic name="SPD" value={pokemon.stats.speed} maxValue={300} />
+                    </section>
+                </>
+            )}
+
         </CardWrapper>
     );
 }
