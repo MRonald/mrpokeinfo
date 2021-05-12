@@ -8,6 +8,11 @@ const HeaderWrapper = styled.div`
     justify-content: space-around;
     align-items: center;
 
+    h1 {
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: white;
+    }
+
     form {
         width: 70%;
         display: flex;

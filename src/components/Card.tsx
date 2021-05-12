@@ -110,9 +110,9 @@ interface pokemonProps {
         "defense": number,
         "special-attack": number,
         "special-defense": number,
-        "speed": number
+        "speed": number,
     },
-    "name": string
+    "name": string,
 }
 
 interface typeProps {
@@ -140,7 +140,6 @@ function Statistic({ name, value }: StatisticProps) {
 
 export default function Card({ name, url }: CardProps) {
     const [pokemon, setPokemon] = useState({} as pokemonProps);
-    const [busca, setBusca] = useState(false);
 
     useEffect(() => {
         axios.get(url).then(
@@ -164,14 +163,17 @@ export default function Card({ name, url }: CardProps) {
                     "name": response.data.name,
                 }
                 setPokemon(result);
-                setBusca(true);
             }
         );
     }, [url]);
 
+    function isEmpty(obj: Object): boolean {
+        return Object.keys(obj).length === 0;
+    }
+
     return (
         <CardWrapper>
-            {!busca ? (
+            {isEmpty(pokemon) ? (
                 <div>Carregando {name}...</div>
             ) : (
                 <>
@@ -212,7 +214,6 @@ export default function Card({ name, url }: CardProps) {
                     </section>
                 </>
             )}
-
         </CardWrapper>
     );
 }
