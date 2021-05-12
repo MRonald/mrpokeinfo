@@ -57,7 +57,7 @@ const HeaderWrapper = styled.div`
 export default function Header() {
     return (
         <HeaderWrapper>
-            <h1>PokeInfo</h1>
+            <h1>Mr.PokeInfo</h1>
             <form>
                 <input type="text" placeholder="Pesquisar por nome (Ex: Charmander)" />
                 <input type="text" placeholder="Pesquisar por categoria" />
