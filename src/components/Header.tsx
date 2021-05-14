@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
+import { SearchContext } from '../contexts/SearchContext';
 
 const HeaderWrapper = styled.div`
     background-color: #2C94F5;
@@ -54,13 +56,31 @@ const HeaderWrapper = styled.div`
     }
 `;
 
+interface eventProps {
+    preventDefault: () => void,
+}
+
 export default function Header() {
+    const { setNameSearch, setTypeSearch } = useContext(SearchContext);
+
+    function find(e: eventProps): void {
+        e.preventDefault();
+    }
+
     return (
         <HeaderWrapper>
             <h1>Mr.PokeInfo</h1>
-            <form>
-                <input type="text" placeholder="Pesquisar por nome (Ex: Charmander)" />
-                <input type="text" placeholder="Pesquisar por categoria" />
+            <form onSubmit={e => find(e)}>
+                <input
+                    type="text"
+                    placeholder="Pesquisar por nome (Ex: Charmander)"
+                    onChange={e => setNameSearch(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Pesquisar por categoria"
+                    onChange={e => setTypeSearch(e.target.value)}
+                />
                 <button>Buscar</button>
             </form>
         </HeaderWrapper>

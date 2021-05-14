@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import Header from './components/Header';
 import ListCards from './components/ListCards';
+import SearchProvider from './contexts/SearchContext';
 
 const GlobalStyle = createGlobalStyle`
     :root {
@@ -19,9 +20,11 @@ const GlobalStyle = createGlobalStyle`
 export default function App() {
     return (
         <div>
-            <GlobalStyle />
-            <Header />
-            <ListCards />
+            <SearchProvider>
+                <GlobalStyle />
+                <Header />
+                <ListCards />
+            </SearchProvider>
         </div>
     );
 }
