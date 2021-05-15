@@ -30,6 +30,7 @@ const CardWrapper = styled.div`
 
     .imgWrapper {
         width: 100%;
+        min-height: 182px;
         display: flex;
         justify-content: center;
         border-bottom: 2px solid var(--orange-dark);

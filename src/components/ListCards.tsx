@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Card from './Card';
 import ArrowRight from '../assets/imgs/arrow-right.png';
 import ArrowLeft from '../assets/imgs/arrow-left.png';
+import { SearchContext } from '../contexts/SearchContext';
 
 const ListCardsWrapper = styled.div`
     width: 80%;
@@ -44,19 +45,34 @@ interface pokemonProps {
     url: string,
 }
 
+interface resultProps {
+    pokemon: {
+        name: string,
+        url: string,
+    }
+}
+
 export default function ListCards() {
     const [pokemons, setPokemons] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const URL = `https://pokeapi.co/api/v2/pokemon/?offset=${(currentPage - 1) * 20}&limit=20`;
+    const {
+        currentPage,
+        url,
+        setCurrentPage
+    } = useContext(SearchContext);
 
     useEffect(() => {
-        axios.get(URL).then(
+        axios.get(url).then(
             response => {
-                setPokemons(response.data.results);
+                if (url.includes('?offset')) {
+                    setPokemons(response.data.results);
+                } else if (url.includes('/type/')) {
+                    const results = response.data.pokemon;
+                    const resultsFiltered = results.map((result: resultProps) => result.pokemon)
+                    setPokemons(resultsFiltered);
+                }
             }
         );
-    }, [currentPage, URL]);
+    }, [currentPage, url]);
 
     function previousPage(): void {
         if (currentPage > 1) {
@@ -73,8 +89,22 @@ export default function ListCards() {
     return (
         <ListCardsWrapper>
             <div className="items">
-                {pokemons.map(
-                    (pokemon: pokemonProps) => <Card name={pokemon.name} url={pokemon.url} key={pokemon.name}/>
+                {url.includes('?offset') ? (
+                    <>
+                        {pokemons.map(
+                            (pokemon: pokemonProps) => <Card name={pokemon.name} url={pokemon.url} key={pokemon.name}/>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {url.includes('/type/') && (
+                            <>
+                                {pokemons.map(
+                                    (pokemon: pokemonProps) => <Card name={pokemon.name} url={pokemon.url} key={pokemon.name}/>
+                                )}
+                            </>
+                        )}
+                    </>
                 )}
             </div>
             <div className="pagination">

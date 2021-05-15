@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { SearchContext } from '../contexts/SearchContext';
 
@@ -28,7 +28,7 @@ const HeaderWrapper = styled.div`
             border-radius: 10px;
             border: 1px solid gray;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, .4);
-            font-family: Ubuntu;
+            font-family: Ubuntu, Arial, sans-serif;
             font-size: 1rem;
         }
         input:not(:first-child) {
@@ -61,10 +61,17 @@ interface eventProps {
 }
 
 export default function Header() {
-    const { setNameSearch, setTypeSearch } = useContext(SearchContext);
+    const [valueName, setValueName] = useState("");
+    const [valueType, setValueType] = useState("");
+    const {setUrl} = useContext(SearchContext);
 
     function find(e: eventProps): void {
         e.preventDefault();
+        if (valueName === '') {
+            setUrl(`https://pokeapi.co/api/v2/type/${valueType}`);
+        } else if (valueType === '') {
+            setUrl(`https://pokeapi.co/api/v2/pokemon/${valueName.toLowerCase()}`);
+        }
     }
 
     return (
@@ -74,12 +81,12 @@ export default function Header() {
                 <input
                     type="text"
                     placeholder="Pesquisar por nome (Ex: Charmander)"
-                    onChange={e => setNameSearch(e.target.value)}
+                    onChange={e => setValueName(e.target.value)}
                 />
                 <input
                     type="text"
                     placeholder="Pesquisar por categoria"
-                    onChange={e => setTypeSearch(e.target.value)}
+                    onChange={e => setValueType(e.target.value)}
                 />
                 <button>Buscar</button>
             </form>

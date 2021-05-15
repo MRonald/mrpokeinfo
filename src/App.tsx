@@ -14,6 +14,7 @@ const GlobalStyle = createGlobalStyle`
     }
     body {
         font-family: Ubuntu, sans-serif;
+        overflow-x: hidden;
     }
 `;
 
