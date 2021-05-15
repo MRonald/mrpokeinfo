@@ -252,7 +252,7 @@ function Statistic({ name, value }: StatisticProps) {
 export default function Card({ name, url }: CardProps) {
     const [pokemon, setPokemon] = useState({} as pokemonProps);
 
-    const nameCapitalize = name[0].toUpperCase() + name.substr(1);
+    const nameCapitalize = name.substr(0, 1).toUpperCase() + name.substr(1);
 
     useEffect(() => {
         axios.get(url).then(

@@ -54,6 +54,7 @@ interface resultProps {
 
 export default function ListCards() {
     const [pokemons, setPokemons] = useState([]);
+    const [pokemon, setPokemon] = useState({} as pokemonProps);
     const {
         currentPage,
         url,
@@ -69,6 +70,12 @@ export default function ListCards() {
                     const results = response.data.pokemon;
                     const resultsFiltered = results.map((result: resultProps) => result.pokemon)
                     setPokemons(resultsFiltered);
+                } else {
+                    const result = {
+                        name: response.data.name,
+                        url: url,
+                    }
+                    setPokemon(result);
                 }
             }
         );
@@ -97,21 +104,25 @@ export default function ListCards() {
                     </>
                 ) : (
                     <>
-                        {url.includes('/type/') && (
+                        {url.includes('/type/') ? (
                             <>
                                 {pokemons.map(
                                     (pokemon: pokemonProps) => <Card name={pokemon.name} url={pokemon.url} key={pokemon.name}/>
                                 )}
                             </>
+                        ) : (
+                            <Card name={pokemon.name} url={pokemon.url} key={pokemon.name} />
                         )}
                     </>
                 )}
             </div>
-            <div className="pagination">
-                <img src={ArrowLeft} alt="" onClick={previousPage}/>
-                <div>Página <span>{currentPage}</span> de <span>{Math.ceil(898 / 20)}</span></div>
-                <img src={ArrowRight} alt="" onClick={nextPage}/>
-            </div>
+            {url.includes('?offset') && (
+                <div className="pagination">
+                    <img src={ArrowLeft} alt="" onClick={previousPage}/>
+                    <div>Página <span>{currentPage}</span> de <span>{Math.ceil(898 / 20)}</span></div>
+                    <img src={ArrowRight} alt="" onClick={nextPage}/>
+                </div>
+            )}
         </ListCardsWrapper>
     );
 }
