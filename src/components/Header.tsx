@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SearchContext } from '../contexts/SearchContext';
 
@@ -63,21 +63,29 @@ interface eventProps {
 export default function Header() {
     const [valueName, setValueName] = useState("");
     const [valueType, setValueType] = useState("");
-    const {setUrl} = useContext(SearchContext);
+    const {nameSearch, typeSearch, setNameSearch, setTypeSearch, setUrl} = useContext(SearchContext);
 
-    function find(e: eventProps): void {
+    useEffect(() => {
+        setUrl(`https://pokeapi.co/api/v2/type/${typeSearch.toLowerCase()}`);
+    }, [setUrl, typeSearch]);
+
+    useEffect(() => {
+        setUrl(`https://pokeapi.co/api/v2/pokemon/${nameSearch.toLowerCase()}`);
+    }, [nameSearch, setUrl]);
+
+    function setValues(e: eventProps): void {
         e.preventDefault();
         if (valueName === '') {
-            setUrl(`https://pokeapi.co/api/v2/type/${valueType}`);
+            setTypeSearch(valueType);
         } else if (valueType === '') {
-            setUrl(`https://pokeapi.co/api/v2/pokemon/${valueName.toLowerCase()}`);
+            setNameSearch(valueName);
         }
     }
 
     return (
         <HeaderWrapper>
             <h1>Mr.PokeInfo</h1>
-            <form onSubmit={e => find(e)}>
+            <form onSubmit={e => setValues(e)}>
                 <input
                     type="text"
                     placeholder="Pesquisar por nome (Ex: Charmander)"

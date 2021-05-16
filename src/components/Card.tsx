@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { SearchContext } from '../contexts/SearchContext';
 
 const CardWrapper = styled.div`
     width: 290px;
@@ -251,6 +252,7 @@ function Statistic({ name, value }: StatisticProps) {
 
 export default function Card({ name, url }: CardProps) {
     const [pokemon, setPokemon] = useState({} as pokemonProps);
+    const { isEmpty } = useContext(SearchContext);
 
     const nameCapitalize = name.substr(0, 1).toUpperCase() + name.substr(1);
 
@@ -280,10 +282,6 @@ export default function Card({ name, url }: CardProps) {
         );
     }, [url]);
 
-    function isEmpty(obj: Object): boolean {
-        return Object.keys(obj).length === 0;
-    }
-
     return (
         <CardWrapper>
             {isEmpty(pokemon) ? (
@@ -311,7 +309,7 @@ export default function Card({ name, url }: CardProps) {
                         <span>{nameCapitalize}</span>
                     </header>
                     <section className="imgWrapper">
-                        <img src={pokemon.image} alt={`Pokemon ${pokemon.name}`} />
+                        <img src={pokemon.image} alt={`Imagem de ${nameCapitalize}`} />
                     </section>
                     <section className="info">
                         <div>

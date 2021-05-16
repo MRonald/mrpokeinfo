@@ -40,6 +40,29 @@ const ListCardsWrapper = styled.div`
         }
     }
 `;
+
+const InfoSearchWrapper = styled.div`
+    margin-top: 10px;
+    width: 100vw;
+    display: flex;
+    justify-content: space-around;
+
+    span {
+        margin-right: 100px;
+    }
+    span span {
+        color: #1D6BB6;
+        font-weight: 700;
+    }
+    a {
+        color: #1D6BB6;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+`;
+
 interface pokemonProps {
     name: string,
     url: string,
@@ -56,12 +79,17 @@ export default function ListCards() {
     const [pokemons, setPokemons] = useState([]);
     const [pokemon, setPokemon] = useState({} as pokemonProps);
     const {
+        nameSearch,
+        typeSearch,
         currentPage,
         url,
-        setCurrentPage
+        isEmpty,
+        previousPage,
+        nextPage
     } = useContext(SearchContext);
 
     useEffect(() => {
+        console.log(url);
         axios.get(url).then(
             response => {
                 if (url.includes('?offset')) {
@@ -81,48 +109,70 @@ export default function ListCards() {
         );
     }, [currentPage, url]);
 
-    function previousPage(): void {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    }
-
-    function nextPage(): void {
-        if (currentPage < 45) {
-            setCurrentPage(currentPage + 1);
-        }
-    }
-
     return (
-        <ListCardsWrapper>
-            <div className="items">
-                {url.includes('?offset') ? (
-                    <>
-                        {pokemons.map(
-                            (pokemon: pokemonProps) => <Card name={pokemon.name} url={pokemon.url} key={pokemon.name}/>
-                        )}
-                    </>
-                ) : (
-                    <>
-                        {url.includes('/type/') ? (
-                            <>
-                                {pokemons.map(
-                                    (pokemon: pokemonProps) => <Card name={pokemon.name} url={pokemon.url} key={pokemon.name}/>
-                                )}
-                            </>
-                        ) : (
-                            <Card name={pokemon.name} url={pokemon.url} key={pokemon.name} />
-                        )}
-                    </>
-                )}
-            </div>
-            {url.includes('?offset') && (
-                <div className="pagination">
-                    <img src={ArrowLeft} alt="" onClick={previousPage}/>
-                    <div>Página <span>{currentPage}</span> de <span>{Math.ceil(898 / 20)}</span></div>
-                    <img src={ArrowRight} alt="" onClick={nextPage}/>
-                </div>
+        <>
+            {url.includes('/type/') ? (
+                <InfoSearchWrapper>
+                    <span>Resultados do tipo <span>{typeSearch}</span></span>
+                    <a href="/">Mostrar lista completa</a>
+                </InfoSearchWrapper>
+            ) : (
+                <>
+                    {!url.includes('?offset') && (
+                        <InfoSearchWrapper>
+                            <span>Resultado de <span>{nameSearch}</span></span>
+                            <a href="/">Mostrar lista completa</a>
+                        </InfoSearchWrapper>
+                    )}
+                </>
             )}
-        </ListCardsWrapper>
+
+            <ListCardsWrapper>
+                <div className="items">
+                    {url.includes('?offset') ? (
+                        <>
+                            {pokemons.map(
+                                (pokemon: pokemonProps) =>
+                                    <Card
+                                        name={pokemon.name}
+                                        url={pokemon.url}
+                                        key={pokemon.name}
+                                    />
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            {url.includes('/type/') ? (
+                                <>
+                                    {pokemons.map(
+                                        (pokemon: pokemonProps) =>
+                                            <Card
+                                                name={pokemon.name}
+                                                url={pokemon.url}
+                                                key={pokemon.name}
+                                            />
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    {isEmpty(pokemon) ? (
+                                        <div>CARREGANDO...</div>
+                                    ) : (
+                                        <Card name={pokemon.name} url={pokemon.url} key={pokemon.name} />
+                                    )}
+                                </>
+                            )}
+                        </>
+                    )}
+                </div>
+                {url.includes('?offset') && (
+                    <div className="pagination">
+                        <img src={ArrowLeft} alt="" onClick={previousPage} />
+                        <div>Página <span>{currentPage}</span> de <span>{Math.ceil(898 / 20)}</span></div>
+                        <img src={ArrowRight} alt="" onClick={nextPage} />
+                    </div>
+                )}
+            </ListCardsWrapper>
+        </>
     );
 }
