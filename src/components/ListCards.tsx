@@ -197,6 +197,8 @@ export default function ListCards() {
     } = useContext(SearchContext);
 
     useEffect(() => {
+        setPokemons([]);
+        setPokemon({} as pokemonProps);
         axios.get(url).then(
             response => {
                 if (url.includes('?offset')) {
@@ -212,6 +214,10 @@ export default function ListCards() {
                     }
                     setPokemon(result);
                 }
+            }
+        ).catch(
+            () => {
+                alert('Os parâmetros passados não retornam nenhum resultado.');
             }
         );
     }, [currentPage, url]);
@@ -236,7 +242,7 @@ export default function ListCards() {
 
             <ListCardsWrapper>
                 <div className="items">
-                    {pokemons.length === 0 ? (
+                    {pokemons.length === 0 && isEmpty(pokemon) ? (
                         <div className="screenLoading">
                             <div>
                                 <div className="loadingSpinner">
